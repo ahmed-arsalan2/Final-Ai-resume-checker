@@ -1,0 +1,444 @@
+/* ================================================================
+   analysis_dashboard.css — A³ Resume Intelligence
+   Matches dashboard.css glassmorphism aesthetic exactly.
+   Includes merged skills card with tab switcher.
+   ================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+/* ── 1. Tokens ──────────────────────────────────────────────── */
+:root {
+  --gold:       #D4AF37;
+  --gold-lt:    #F5E6A8;
+  --gold-dim:   rgba(212,175,55,0.13);
+  --gold-bdr:   rgba(212,175,55,0.4);
+
+  --green:      #34d399;
+  --green-dim:  rgba(52,211,153,0.11);
+  --green-bdr:  rgba(52,211,153,0.35);
+
+  --red:        #f87171;
+  --red-dim:    rgba(248,113,113,0.1);
+  --red-bdr:    rgba(248,113,113,0.32);
+
+  --amber:      #fbbf24;
+  --amber-dim:  rgba(251,191,36,0.1);
+  --amber-bdr:  rgba(251,191,36,0.32);
+
+  --text:       #F5F5F5;
+  --text-muted: rgba(245,245,245,0.55);
+  --text-dim:   rgba(245,245,245,0.28);
+  --border:     rgba(255,255,255,0.08);
+
+  --r:    26px;
+  --r-sm: 14px;
+
+  /* Exact card shadow from dashboard.css */
+  --shadow:     0 25px 50px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.04) inset;
+  --shadow-hov: 0 28px 60px rgba(0,0,0,0.65), 0 0 40px rgba(212,175,55,0.16);
+}
+
+/* ── 2. Reset ───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { scrollbar-width: none; -ms-overflow-style: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+
+/* ── 3. Body — identical to dashboard ──────────────────────── */
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: radial-gradient(circle at 15% 20%, #1a1a1a, #0b0b0b 60%);
+  min-height: 100vh;
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(212,175,55,0.08), transparent 70%);
+  top: -150px; right: -150px;
+  animation: floatGlow 10s ease-in-out infinite alternate;
+  z-index: -1; pointer-events: none;
+}
+@keyframes floatGlow { 0% { transform:translateY(0); } 100% { transform:translateY(40px); } }
+
+body::after {
+  content: "";
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index: -2; pointer-events: none;
+}
+
+/* ── 4. Navbar ──────────────────────────────────────────────── */
+.navbar {
+  width: 100%; height: 70px; padding: 0 60px;
+  display: flex; justify-content: space-between; align-items: center;
+  background: rgba(15,15,15,0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(212,175,55,0.2);
+  position: sticky; top: 0; z-index: 1000;
+}
+.logo { display: flex; align-items: center; gap: 14px; cursor: pointer; position: relative; }
+.logo-mark { font-size: 24px; font-weight: 700; color: var(--gold); letter-spacing: 1px; position: relative; }
+.logo-mark sup { font-size: 11px; position: relative; top: -0.7em; }
+.logo-mark::after {
+  content: ""; position: absolute; inset: -6px; border-radius: 8px;
+  background: radial-gradient(circle, rgba(212,175,55,0.35), transparent 70%);
+  opacity: 0; transition: opacity 0.4s ease; z-index: -1;
+}
+.logo:hover .logo-mark::after { opacity: 1; }
+.logo-divider { width: 1px; height: 28px; background: var(--border); }
+.logo-text span { font-size: 14px; font-weight: 600; }
+.logo-text small { display: block; font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.nav-left  { display: flex; align-items: center; }
+.nav-right { display: flex; align-items: center; gap: 20px; }
+.user-info { display: flex; align-items: center; gap: 8px; }
+.user-icon  { font-size: 16px; }
+.username   { font-size: 14px; font-weight: 500; color: var(--text); }
+.nav-btn {
+  padding: 9px 22px; border-radius: 25px;
+  border: 1px solid var(--gold-bdr);
+  background: var(--gold-dim); color: var(--gold); font-weight: 500; font-size: 13px;
+  text-decoration: none; transition: all 0.3s ease;
+}
+.nav-btn:hover {
+  background: rgba(52,211,153,0.12); border-color: rgba(52,211,153,0.5); color: var(--green);
+  transform: translateY(-2px); box-shadow: 0 8px 25px rgba(52,211,153,0.18);
+}
+
+/* ── 5. Page ────────────────────────────────────────────────── */
+.page { max-width: 1420px; margin: 0 auto; padding: 40px 24px 64px; }
+
+/* ── 6. Page header ─────────────────────────────────────────── */
+.page-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 26px;
+}
+.page-eyebrow {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 5px;
+}
+.page-title {
+  font-size: 2.2rem; font-weight: 700;
+  background: linear-gradient(90deg, #ffffff, var(--gold), #ffffff);
+  background-size: 200% auto;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  animation: shineText 5s linear infinite;
+}
+@keyframes shineText { to { background-position: 200% center; } }
+
+.gen-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 11px 24px; border-radius: 25px;
+  background: linear-gradient(135deg, var(--gold), #B9962E);
+  color: #0a0a0a; font-size: 13px; font-weight: 700;
+  text-decoration: none; letter-spacing: 0.01em;
+  box-shadow: 0 6px 20px rgba(212,175,55,0.3);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.gen-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(212,175,55,0.4); }
+
+/* ── 7. Stat strip ──────────────────────────────────────────── */
+.stat-strip {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 14px; margin-bottom: 26px;
+}
+.stat-chip {
+  position: relative;
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border); border-radius: 20px;
+  padding: 16px 18px; display: flex; flex-direction: column; gap: 5px;
+  overflow: hidden;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.stat-chip::before {
+  content: ""; position: absolute; inset: 0; border-radius: 20px;
+  background: radial-gradient(circle at top right, rgba(212,175,55,0.1), transparent 60%);
+  opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+}
+.stat-chip:hover::before { opacity: 1; }
+.stat-chip:hover { transform: translateY(-4px); border-color: rgba(212,175,55,0.45); box-shadow: var(--shadow-hov); }
+
+/* top accent stripe */
+.stat-chip::after {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, rgba(212,175,55,0.7), transparent);
+  border-radius: 20px 20px 0 0;
+}
+.stat-chip.chip-green::after { background: linear-gradient(90deg, var(--green), transparent); }
+.stat-chip.chip-red::after   { background: linear-gradient(90deg, var(--red), transparent); }
+.stat-chip.chip-amber::after { background: linear-gradient(90deg, var(--amber), transparent); }
+.stat-chip.chip-gold::after  { background: linear-gradient(90deg, var(--gold), var(--gold-lt), transparent); }
+
+.chip-val { font-family: 'DM Mono', monospace; font-size: 1.7rem; font-weight: 500; color: var(--gold); line-height: 1; }
+.chip-green .chip-val { color: var(--green); }
+.chip-red   .chip-val { color: var(--red); }
+.chip-amber .chip-val { color: var(--amber); }
+.chip-lbl { font-size: 10px; color: var(--text-muted); letter-spacing: 0.05em; text-transform: uppercase; font-family: 'DM Mono', monospace; }
+
+/* ── 8. Grid ────────────────────────────────────────────────── */
+.main-grid { display: grid; grid-template-columns: 400px 1fr; gap: 22px; align-items: start; }
+.col-left, .col-right { display: flex; flex-direction: column; gap: 22px; }
+
+/* ── 9. Card base — mirrors dashboard.css .card exactly ────── */
+.dash-card {
+  position: relative;
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 32px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+/* Gold radial glow on hover */
+.dash-card::before {
+  content: ""; position: absolute; inset: 0; border-radius: var(--r);
+  background: radial-gradient(circle at top right, rgba(212,175,55,0.15), transparent 60%);
+  opacity: 0; transition: opacity 0.4s ease; pointer-events: none;
+}
+.dash-card:hover::before { opacity: 1; }
+.dash-card:hover { transform: translateY(-8px); border-color: rgba(212,175,55,0.5); box-shadow: var(--shadow-hov); }
+
+/* gold top accent stripe */
+.dash-card::after {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, rgba(212,175,55,0.65), transparent);
+  border-radius: var(--r) var(--r) 0 0;
+}
+/* Section-specific accent colours */
+.card-skills-merged::after { background: linear-gradient(90deg, var(--green), rgba(248,113,113,0.6), transparent); }
+.card-weak::after           { background: linear-gradient(90deg, var(--amber), transparent); }
+.card-imp::after            { background: linear-gradient(90deg, var(--gold-lt), transparent); }
+
+/* ── 10. Card header ────────────────────────────────────────── */
+.card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+
+.c-icon {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: var(--gold-dim); border: 1px solid var(--gold-bdr);
+  color: var(--gold); font-size: 14px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.c-icon--green  { background: var(--green-dim); border-color: var(--green-bdr); color: var(--green); }
+.c-icon--red    { background: var(--red-dim);   border-color: var(--red-bdr);   color: var(--red); }
+.c-icon--amber  { background: var(--amber-dim); border-color: var(--amber-bdr); color: var(--amber); }
+.c-icon--gold   { background: rgba(212,175,55,0.18); border-color: var(--gold-bdr); color: var(--gold-lt); }
+/* Split gradient icon for the merged skills card */
+.c-icon--skills {
+  background: linear-gradient(135deg, rgba(52,211,153,0.14), rgba(248,113,113,0.12));
+  border: 1px solid rgba(52,211,153,0.3);
+  color: var(--green); font-size: 15px;
+}
+
+.c-title { font-size: 15px; font-weight: 600; color: var(--gold-lt); letter-spacing: 0.02em; flex: 1; }
+
+.c-badge {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  padding: 3px 10px; border-radius: 100px; font-weight: 500;
+}
+.badge-green { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-bdr); }
+.badge-red   { background: var(--red-dim);   color: var(--red);   border: 1px solid var(--red-bdr); }
+.badge-amber { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber-bdr); }
+.badge-gold  { background: var(--gold-dim);  color: var(--gold);  border: 1px solid var(--gold-bdr); }
+
+/* ── 11. Score ring ─────────────────────────────────────────── */
+.ring-wrap   { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.ring-shell  { position: relative; width: 190px; height: 190px; }
+.ring-svg    { width: 190px; height: 190px; transform: rotate(-90deg); }
+.rt { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 14; }
+.rf {
+  fill: none; stroke-width: 14; stroke-linecap: round;
+  stroke-dasharray: 502.65; stroke-dashoffset: 502.65;
+  transition: stroke-dashoffset 1.7s cubic-bezier(.22,1,.36,1);
+}
+.ring-center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.ring-num { font-family: 'DM Mono', monospace; font-size: 2.8rem; font-weight: 500; color: var(--gold); line-height: 1; }
+.ring-sub  { font-size: 11px; color: var(--text-muted); font-family: 'DM Mono', monospace; margin-top: 3px; }
+.score-tier {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px;
+  background: var(--gold-dim); color: var(--gold); border: 1px solid var(--gold-bdr);
+}
+
+/* ── 12. Breakdown bars ─────────────────────────────────────── */
+.bk-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; }
+.bk-meta { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.bk-name  { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+.bk-score { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text); }
+.bk-score small { font-size: 9px; color: var(--text-dim); margin-left: 1px; }
+.bk-track { height: 7px; background: rgba(255,255,255,0.05); border-radius: 100px; overflow: hidden; }
+.bk-fill  { height: 100%; width: 0%; border-radius: 100px; transition: width 1.3s cubic-bezier(.22,1,.36,1); }
+.fill-hi  { background: linear-gradient(90deg,#34d399,#6ee7b7); box-shadow: 0 0 8px rgba(52,211,153,.4); }
+.fill-mid { background: linear-gradient(90deg,#D4AF37,#F5E6A8); box-shadow: 0 0 8px rgba(212,175,55,.4); }
+.fill-lo  { background: linear-gradient(90deg,#f87171,#fca5a5); box-shadow: 0 0 8px rgba(248,113,113,.4); }
+
+.chart-area { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+
+/* ── 13. ═══════ MERGED SKILLS CARD ═══════ ─────────────────── */
+
+/* Doughnut row */
+.skills-chart-row {
+  display: flex; align-items: center; gap: 22px;
+  margin-bottom: 20px;
+}
+.skills-donut-wrap { position: relative; width: 110px; height: 110px; flex-shrink: 0; }
+.donut-label {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace; font-size: 17px; font-weight: 500;
+  color: var(--gold); pointer-events: none;
+}
+.skills-legend { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.leg-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); }
+.leg-dot  { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* Badge counts in card-head */
+.skills-badge-row { display: flex; align-items: center; gap: 5px; }
+.skills-sep        { font-size: 12px; color: var(--text-dim); }
+
+/* Tabs */
+.skills-tabs {
+  display: flex; gap: 8px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px; margin-bottom: 16px;
+}
+.s-tab {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 16px; border-radius: 100px; border: 1px solid var(--border);
+  background: rgba(255,255,255,0.04);
+  color: var(--text-muted); font-size: 13px; font-weight: 500;
+  font-family: 'Inter', sans-serif; cursor: pointer;
+  transition: all 0.25s ease;
+}
+.s-tab--active {
+  background: var(--green-dim); color: var(--green); border-color: var(--green-bdr);
+}
+.s-tab[data-tab="missing"].s-tab--active {
+  background: var(--red-dim); color: var(--red); border-color: var(--red-bdr);
+}
+.s-tab:not(.s-tab--active):hover { background: rgba(255,255,255,0.07); color: var(--text); border-color: rgba(255,255,255,0.15); }
+
+.s-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+.s-dot--green { background: var(--green); box-shadow: 0 0 5px var(--green); }
+.s-dot--red   { background: var(--red);   box-shadow: 0 0 5px var(--red); }
+
+/* Panels */
+.skills-panel         { display: block; }
+.skills-panel--hidden { display: none; }
+
+/* ── 14. Badge clouds ───────────────────────────────────────── */
+.badge-cloud { display: flex; flex-wrap: wrap; gap: 8px 8px; }
+
+.skill-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 13px; border-radius: 100px;
+  font-size: 12px; font-weight: 500; font-family: 'DM Mono', monospace;
+  cursor: default; transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.skill-badge:hover { transform: translateY(-2px) scale(1.04); box-shadow: 0 4px 14px rgba(0,0,0,0.35); }
+
+.badge-matched {
+  background: var(--green-dim); border: 1px solid var(--green-bdr); color: var(--green);
+}
+.badge-matched::before {
+  content: ""; width: 5px; height: 5px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 5px var(--green); display: inline-block;
+}
+.badge-missing {
+  background: var(--red-dim); border: 1px solid var(--red-bdr);
+  color: rgba(248,113,113,0.65);
+  text-decoration: line-through; text-decoration-color: rgba(248,113,113,0.38); opacity: 0.78;
+}
+.badge-missing::before {
+  content: ""; width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(248,113,113,0.55); display: inline-block;
+}
+
+/* ── 15. Warning list ───────────────────────────────────────── */
+.warn-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.warn-item {
+  display: flex; align-items: flex-start; gap: 10px; padding: 12px 15px;
+  background: var(--amber-dim); border: 1px solid var(--amber-bdr);
+  border-left: 3px solid var(--amber); border-radius: var(--r-sm);
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+.warn-item:hover { background: rgba(251,191,36,0.15); transform: translateX(3px); }
+.warn-icon { color: var(--amber); font-size: 14px; flex-shrink: 0; margin-top: 1px; filter: drop-shadow(0 0 4px rgba(251,191,36,0.5)); }
+.warn-text { font-size: 13px; line-height: 1.65; color: var(--text-muted); }
+
+/* ── 16. Improvement list ───────────────────────────────────── */
+.imp-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.imp-item {
+  display: flex; align-items: flex-start; gap: 10px; padding: 12px 15px;
+  background: var(--gold-dim); border: 1px solid var(--gold-bdr);
+  border-left: 3px solid var(--gold); border-radius: var(--r-sm);
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+.imp-item:hover { background: rgba(212,175,55,0.16); transform: translateX(3px); }
+.imp-arrow {
+  color: var(--gold); font-size: 15px; font-weight: 700; flex-shrink: 0;
+  filter: drop-shadow(0 0 5px rgba(212,175,55,0.6));
+  animation: arrowBob 2.4s ease-in-out infinite;
+}
+@keyframes arrowBob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-4px); } }
+.imp-num {
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gold);
+  background: rgba(212,175,55,0.15); border-radius: 5px; padding: 1px 6px;
+  flex-shrink: 0; margin-top: 2px; min-width: 20px; text-align: center;
+}
+.imp-text { font-size: 13px; line-height: 1.65; color: var(--text-muted); }
+.imp-text strong { color: var(--text); }
+
+/* ── 17. Raw toggle ─────────────────────────────────────────── */
+.raw-toggle {
+  margin-left: auto; font-size: 11px; color: var(--text-dim);
+  background: none; border: 1px solid var(--border); border-radius: 100px;
+  padding: 4px 12px; cursor: pointer; font-family: 'DM Mono', monospace;
+  transition: color 0.2s, border-color 0.2s;
+}
+.raw-toggle:hover { color: var(--gold); border-color: var(--gold-bdr); }
+
+.raw-body {
+  margin-top: 16px; padding: 20px;
+  background: rgba(0,0,0,0.3); border-radius: var(--r-sm); border: 1px solid var(--border);
+  max-height: 380px; overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: var(--gold-bdr) transparent;
+}
+.raw-body::-webkit-scrollbar { width: 4px; }
+.raw-body::-webkit-scrollbar-thumb { background: var(--gold-bdr); border-radius: 8px; }
+
+/* Raw HTML typography */
+#typing-output h3 { font-size: 11px; font-weight: 600; color: var(--gold); font-family: 'DM Mono', monospace; letter-spacing: 0.05em; text-transform: uppercase; margin: 14px 0 7px; }
+#typing-output p  { font-size: 13px; line-height: 1.75; color: var(--text-muted); margin-bottom: 9px; }
+#typing-output ul { margin-left: 18px; margin-bottom: 10px; }
+#typing-output li { font-size: 13px; line-height: 1.65; color: var(--text-muted); margin-bottom: 5px; }
+#typing-output hr { border: none; height: 1px; background: var(--border); margin: 12px 0; }
+#typing-output strong { color: var(--text); }
+
+/* Parse placeholder */
+.parse-hint { font-size: 12px; color: var(--text-dim); font-family: 'DM Mono', monospace; padding: 8px 0; display: block; }
+
+/* ── 18. Responsive ─────────────────────────────────────────── */
+@media (max-width: 1100px) { .main-grid { grid-template-columns: 1fr; } }
+@media (max-width: 760px)  {
+  .stat-strip   { grid-template-columns: repeat(3, 1fr); }
+  .page-header  { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .page         { padding: 22px 16px 40px; }
+  .navbar       { padding: 0 20px; }
+}
+@media (max-width: 480px)  { .stat-strip { grid-template-columns: repeat(2, 1fr); } }

@@ -1,0 +1,173 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #111;
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 40px 0;
+}
+
+.resume {
+    width: 900px;
+    background: #f2f2f2;
+    padding: 40px;
+}
+
+/* HEADER */
+.header {
+    text-align: center;
+    border-top: 1px solid #999;
+    border-bottom: 1px solid #999;
+    padding: 25px 0;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 36px;
+    letter-spacing: 5px;
+    font-weight: 600;
+    color: #333;
+}
+
+.job-title {
+    margin-top: 10px;
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: #777;
+}
+
+/* MAIN LAYOUT */
+.main {
+    display: flex;
+}
+
+.left {
+    width: 35%;
+    padding-right: 25px;
+    border-right: 1px solid #bbb;
+}
+
+.right {
+    width: 65%;
+    padding-left: 25px;
+}
+
+/* SECTIONS */
+.section {
+    margin-bottom: 30px;
+}
+
+.section h2 {
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.section ul {
+    list-style: disc;
+    padding-left: 18px;
+}
+
+.section ul li {
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #444;
+}
+
+/* EDUCATION */
+.item {
+    margin-bottom: 15px;
+}
+
+.item h3 {
+    font-size: 13px;
+    color: #555;
+}
+
+.bold {
+    font-weight: 600;
+    font-size: 13px;
+    margin: 4px 0;
+}
+
+/* WORK EXPERIENCE */
+.job {
+    margin-bottom: 20px;
+}
+
+.job-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+}
+
+.position {
+    font-size: 13px;
+    margin: 5px 0 8px 0;
+    color: #666;
+}
+
+.job ul {
+    padding-left: 18px;
+}
+
+.job ul li {
+    font-size: 13px;
+    margin-bottom: 6px;
+    color: #444;
+}
+/* ============================= */
+/*        PRINT OPTIMIZATION     */
+/* ============================= */
+
+@page {
+    size: A4;
+    margin: 0;
+}
+
+@media print {
+
+    body {
+        background: none;
+        padding: 0;
+    }
+
+    .resume {
+        width: 210mm;
+        min-height: 297mm;
+        padding: 20mm;
+        margin: 0;
+        box-shadow: none;
+    }
+
+    .main {
+        page-break-inside: avoid;
+    }
+
+    .section {
+        page-break-inside: avoid;
+    }
+
+    .job {
+        page-break-inside: avoid;
+    }
+
+    h1, h2, h3 {
+        page-break-after: avoid;
+    }
+
+}
+.resume {
+    width: 900px;
+    background: #f2f2f2;
+    padding: 40px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.1);
+}

@@ -1,0 +1,363 @@
+:root{
+  --bg-dark: #0b0b0b;
+  --bg-deep: #161616;
+  --gold: #D4AF37;
+  --text-light: #EAEAEA;
+  --card-bg: rgba(255,255,255,0.04);
+  --card-border: rgba(255,255,255,0.08);
+  --radius: 24px;
+  --font: 'Inter', system-ui, sans-serif;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:var(--font);
+  color:var(--text-light);
+  background: radial-gradient(circle at 20% 20%, var(--bg-deep), var(--bg-dark) 60%);
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar {
+    width: 100%;
+    height: 70px;
+    padding: 0 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(15, 15, 15, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(212,175,55,0.2);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+}
+
+.logo-mark {
+    font-size: 24px;
+    font-weight: 700;
+    color: #D4AF37;
+}
+
+.logo-mark sup {
+    font-size: 11px;
+    position: relative;
+    top: -0.7em;
+}
+
+.logo-divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255,255,255,0.15);
+}
+
+.logo-text span {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.logo-text small {
+    display: block;
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.username {
+    color: #F5F5F5;
+}
+
+.logout-btn {
+    padding: 9px 22px;
+    border-radius: 25px;
+    border: 1px solid rgba(212,175,55,0.4);
+    background: rgba(212,175,55,0.08);
+    color: #D4AF37;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: rgba(212,175,55,0.15);
+    border: 1px solid rgba(212,175,55,0.6);
+    color: #ffffff;
+}
+
+/* ================= ATS PAGE ================= */
+
+.ats-page{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:60px 30px;
+}
+
+.ats-card{
+  width:100%;
+  max-width:1200px;
+  background:var(--card-bg);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--card-border);
+  border-radius:var(--radius);
+  padding:60px;
+}
+
+.ats-title{
+  text-align:center;
+  font-size:2rem;
+  margin-bottom:60px;
+  background:linear-gradient(90deg,var(--gold),#F5E6A8);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+/* ================= SCORE SECTION ================= */
+
+.ats-top{
+  display:grid;
+  grid-template-columns: 320px 1fr;
+  gap:60px;
+  align-items:center;
+  margin-bottom:70px;
+}
+
+.score-section{
+  display:flex;
+  justify-content:center;
+}
+
+.score-ring{
+  position:relative;
+  width:220px;
+  height:220px;
+}
+
+.progress-ring{
+  transform:rotate(-90deg);
+}
+
+.ring-bg{
+  fill:none;
+  stroke:rgba(255,255,255,0.08);
+  stroke-width:12;
+}
+
+.ring-progress{
+  fill:none;
+  stroke:var(--gold);
+  stroke-width:12;
+  stroke-linecap:round;
+  transition:stroke-dashoffset 1.5s ease;
+}
+
+.score-text{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:42px;
+  font-weight:600;
+  color:var(--gold);
+}
+
+/* ================= BREAKDOWN ================= */
+
+.score-breakdown{
+  list-style:none;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:25px;
+}
+
+.score-breakdown li{
+  background:rgba(0,0,0,0.7);
+  border-radius:18px;
+  padding:20px;
+  border:1px solid rgba(255,255,255,0.05);
+  display:flex;
+  flex-direction:column;
+  transition:0.3s ease;
+}
+
+.score-breakdown li:hover{
+  transform:translateY(-6px);
+  box-shadow:0 15px 35px rgba(0,0,0,0.6);
+}
+
+/* NEW: Parameter title */
+.param-name{
+  font-size:14px;
+  font-weight:500;
+  opacity:0.9;
+}
+
+/* NEW: Score number */
+.param-score{
+  margin-top:10px;
+  align-self:flex-end;
+  color:var(--gold);
+  font-weight:600;
+}
+
+/* Progress Bar Container */
+.bar{
+  width:100%;
+  height:8px;
+  background:rgba(255,255,255,0.05);
+  border-radius:10px;
+  overflow:hidden;
+  margin-top:10px;
+  position:relative;
+}
+
+/* Animated fill created via JS */
+.bar div{
+  height:100%;
+  width:0%;
+  border-radius:10px;
+  transition:width 1.2s ease;
+}
+
+/* ================= ANALYSIS BOX ================= */
+
+.analysis-title{
+  font-size:1.4rem;
+  margin-bottom:20px;
+  color:#F5E6A8;
+}
+
+.analysis-box{
+  background:rgba(0,0,0,0.75);
+  border-radius:20px;
+  padding:30px;
+  max-height:450px;
+  overflow:auto;
+  line-height:1.7;
+}
+
+.analysis-box h3{
+  margin-top:25px;
+  margin-bottom:10px;
+  color:var(--gold);
+}
+
+.analysis-box p{
+  margin-bottom:12px;
+  opacity:0.9;
+}
+
+.analysis-box ul{
+  margin-left:20px;
+  margin-bottom:18px;
+}
+
+.analysis-box li{
+  margin-bottom:8px;
+  line-height:1.6;
+}
+
+.analysis-box hr{
+  border:none;
+  height:1px;
+  background:rgba(255,255,255,0.1);
+  margin:30px 0;
+}
+
+/* ================= BUTTON ================= */
+
+.generate-section{
+  text-align:center;
+  margin-top:30px;
+}
+
+.generate-btn{
+  background: linear-gradient(90deg, #D4AF37, #F5E6A8);
+  border:none;
+  padding:12px 28px;
+  font-size:15px;
+  border-radius:25px;
+  cursor:pointer;
+  transition:0.3s ease;
+  font-weight:600;
+}
+
+.generate-btn:hover{
+  transform:scale(1.05);
+}
+
+/* ================= SCROLL REVEAL ================= */
+
+.reveal{
+  opacity:0;
+  transform:translateY(40px);
+  transition:all 0.8s ease;
+}
+
+.reveal.active{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1000px){
+
+  .ats-top{
+    grid-template-columns:1fr;
+    text-align:center;
+  }
+
+  .score-breakdown{
+    grid-template-columns:1fr;
+  }
+
+}
+
+/* Hide main scrollbar */
+
+html, body{
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar{
+  display:none;
+}
+
+/* Analysis box scrollbar */
+
+.analysis-box::-webkit-scrollbar{
+  width:6px;
+}
+
+.analysis-box::-webkit-scrollbar-track{
+  background:rgba(255,255,255,0.05);
+}
+
+.analysis-box::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#D4AF37,#B9962E);
+  border-radius:10px;
+}

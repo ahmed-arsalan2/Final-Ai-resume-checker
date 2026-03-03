@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   {% load static %}
+  <meta charset="UTF-8">
+  <title>AI Resume Analyzer</title>
+   <link rel="icon" type="image/svg+xml" href="{% static 'a3-favicon.svg' %}">
+ 
+<link rel="stylesheet" href="{% static 'auth.css' %}">
+
+</head>
+<body>
+
+<div class="container" id="container">
+
+  <!-- SIGN UP -->
+  <div class="form-container sign-up-container">
+    <form method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="form_type" value="register">
+
+      <h1>Create Account</h1>
+      <span class="subtitle">Start analyzing resumes with AI</span>
+
+      <input type="text" name="name" placeholder="Full Name" required>
+      <input type="text" name="username" placeholder="Username" required>
+      <input type="email" name="email" placeholder="Email Address" required>
+
+      <div class="password-field">
+        <input type="password" name="password" id="signupPassword" placeholder="Create Password" required>
+        <span class="toggle-pass" data-target="signupPassword">👁</span>
+      </div>
+
+      <button type="submit" class="auth-btn">
+  <span class="btn-text">Create Account</span>
+  <span class="spinner"></span>
+</button>
+    </form>
+  </div>
+
+  
+  <!-- LOGIN -->
+  <div class="form-container sign-in-container">
+    <form method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="form_type" value="login">
+
+      <h1>Welcome Back</h1>
+      <span class="subtitle">Login to continue</span>
+
+      <input type="text" name="username" placeholder="Username" required>
+
+      <div class="password-field">
+        <input type="password" name="password" id="loginPassword" placeholder="Password" required>
+        <span class="toggle-pass" data-target="loginPassword">👁</span>
+      </div>
+
+      <button type="submit" class="auth-btn">
+  <span class="btn-text">Login</span>
+  <span class="spinner"></span>
+</button>
+
+    </form>
+  </div>
+
+  <!-- OVERLAY -->
+  <div class="overlay-container">
+    <div class="overlay">
+
+      <div class="overlay-panel overlay-left">
+        <h1>Welcome Back!</h1>
+        <p>Login to access your AI dashboard</p>
+        <button class="ghost" id="signIn" type="button">Login</button>
+      </div>
+
+      <div class="overlay-panel overlay-right">
+        <h1>Hello, Future Pro!</h1>
+        <p>Create your account and optimize your resume instantly.</p>
+        <button class="ghost" id="signUp" type="button">Sign Up</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+
+<!-- DJANGO MESSAGE INTEGRATION -->
+{% if messages %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    {% for message in messages %}
+        showToast("{{ message }}", "{{ message.tags }}");
+
+        // If error during register, stay on register panel
+        {% if message.tags == "error" %}
+            document.getElementById("container").classList.add("right-panel-active");
+        {% endif %}
+
+    {% endfor %}
+
+});
+</script>
+{% endif %}
+
+
+<script src="{% static 'auth.js' %}"></script>
+
+</body>
+</html>

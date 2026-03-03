@@ -1,0 +1,170 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A³ AI Resume Intelligence</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'a3-favicon.svg' %}">
+  <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+</head>
+
+<body>
+
+<div class="background-grid"></div>
+
+<!-- ═══════════════════ NAVBAR ═══════════════════ -->
+<nav class="navbar">
+  <div class="nav-left">
+    <div class="logo">
+      <div class="logo-mark">A<sup>3</sup></div>
+      <div class="logo-divider"></div>
+      <div class="logo-text">
+        <span>AI Resume</span>
+        <small>Intelligence</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-right">
+    <div class="user-info">
+      <span class="user-icon">👤</span>
+      <span class="username">{{ request.user.username }}</span>
+    </div>
+    <a href="{% url 'chatbot' %}" class="chatbot-btn">⚡ AI Chat</a>
+    <a href="{% url 'logout' %}"   class="logout-btn">Logout</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<div class="hero">
+  <h1>
+    <span class="hero-brand">A³ </span>Amplify Your Resume
+  </h1>
+  <p>Apex your potential. Accelerate your career with AI precision.</p>
+  <div class="hero-line"></div>
+  <p><span id="typing-text"></span></p>
+</div>
+
+<!-- ═══════════════════ DASHBOARD GRID ═══════════════════ -->
+<div class="dashboard">
+
+  <!-- ── Upload card ── -->
+  <div class="card upload-card">
+    <h2>Upload &amp; Analyse Resume</h2>
+
+    <form method="POST" action="{% url 'analysis' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label>Target Role</label>
+        <select name="target_role" required>
+          <option value="">Select Role</option>
+          <option value="backend">Backend Developer</option>
+          <option value="frontend">Frontend Developer</option>
+          <option value="android">Android Developer</option>
+          <option value="ml">Machine Learning Engineer</option>
+          <option value="data">Data Analyst</option>
+          <option value="devops">DevOps Engineer</option>
+          <option value="fullstack">Full Stack Developer</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Experience Level</label>
+        <select name="experience_level" required>
+          <option value="">Select Experience</option>
+          <option value="fresher">Fresher</option>
+          <option value="junior">1–3 Years</option>
+          <option value="mid">3–5 Years</option>
+          <option value="senior">5+ Years</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Company Type</label>
+        <select name="company_type" required>
+          <option value="">Select Company</option>
+          <option value="startup">Startup</option>
+          <option value="product">Product Based</option>
+          <option value="service">Service Based</option>
+          <option value="faang">FAANG</option>
+        </select>
+      </div>
+
+      <div class="upload-area" id="uploadArea">
+        <p id="uploadText">📄 Click to Upload</p>
+        <input type="file" name="resume" id="resumeInput" accept=".pdf,.jpg,.jpeg,.png" required>
+        <p class="section-subtitle">PDF or image · Optimised for ATS analysis</p>
+      </div>
+
+      <button type="submit" class="primary-btn">Upload &amp; Analyze ↑</button>
+    </form>
+  </div>
+
+  <!-- ── History card ── -->
+  <div class="card history-card">
+    <h2>Uploaded &amp; Analysis History</h2>
+    <div class="history-list">
+      {% if history %}
+        {% for analysis in history %}
+        <div class="history-item">
+          <div class="history-left">
+            <div class="resume-name">{{ analysis.resume.resume.name|slice:"8:" }}</div>
+            <div class="resume-date">{{ analysis.created_at|date:"M d, Y • H:i" }}</div>
+          </div>
+          <div class="history-right">
+            <div class="score-badge">{{ analysis.final_score }}%</div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="no-history">No resumes uploaded yet.</div>
+      {% endif %}
+    </div>
+  </div>
+
+</div><!-- /dashboard -->
+
+<script>
+/* Typing animation */
+const text = "AI-powered ATS analysis tailored to your target job role.";
+let i = 0;
+function typing() {
+  if (i < text.length) {
+    document.getElementById("typing-text").innerHTML += text.charAt(i++);
+    setTimeout(typing, 30);
+  }
+}
+typing();
+
+/* Upload area */
+const uploadArea  = document.getElementById("uploadArea");
+const resumeInput = document.getElementById("resumeInput");
+const uploadText  = document.getElementById("uploadText");
+
+uploadArea.addEventListener("click", () => resumeInput.click());
+
+resumeInput.addEventListener("change", function () {
+  if (this.files.length > 0) {
+    uploadText.textContent = "✅ " + this.files[0].name;
+    uploadText.style.color = "#D4AF37";
+    uploadText.style.fontSize = "15px";
+  }
+});
+
+/* Drag-and-drop */
+uploadArea.addEventListener("dragover",  e => { e.preventDefault(); uploadArea.style.borderColor = "#D4AF37"; });
+uploadArea.addEventListener("dragleave", ()  => { uploadArea.style.borderColor = ""; });
+uploadArea.addEventListener("drop",      e  => {
+  e.preventDefault(); uploadArea.style.borderColor = "";
+  if (e.dataTransfer.files.length) {
+    resumeInput.files = e.dataTransfer.files;
+    uploadText.textContent = "✅ " + e.dataTransfer.files[0].name;
+    uploadText.style.color = "#D4AF37";
+  }
+});
+</script>
+
+</body>
+</html>

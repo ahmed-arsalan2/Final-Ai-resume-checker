@@ -1,0 +1,250 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A³ — Resume Analysis</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'a3-favicon.svg' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'analysis_dashboard.css' %}">
+
+  {# Pass Django context → JS #}
+  <script>
+    window.ATS_DATA = {
+      score: {{ result.weighted_score|default:0 }},
+      breakdown: {
+        {% for k, v in result.breakdown.items %}"{{ k }}": {{ v }}{% if not forloop.last %},{% endif %}
+        {% endfor %}
+      }
+    };
+  </script>
+</head>
+<body>
+
+<!-- ═══════════════════ NAVBAR ═══════════════════ -->
+<nav class="navbar">
+  <div class="nav-left">
+    <div class="logo">
+      <div class="logo-mark">A<sup>3</sup></div>
+      <div class="logo-divider"></div>
+      <div class="logo-text">
+        <span>AI Resume</span>
+        <small>Intelligence</small>
+      </div>
+    </div>
+  </div>
+  <div class="nav-right">
+    <div class="user-info">
+      <span class="user-icon">👤</span>
+      <span class="username">{{ request.user.username }}</span>
+    </div>
+    <a href="{% url 'dashboard' %}" class="nav-btn">← Dashboard</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<main class="page">
+
+  <!-- Page header -->
+  <header class="page-header">
+    <div>
+      <div class="page-eyebrow">Resume Intelligence Report</div>
+      <h1 class="page-title">ATS Analysis</h1>
+    </div>
+    {% if resume %}
+    <a href="{% url 'generate_pdf' resume.id %}" class="gen-btn">↓ Generate Optimised Resume</a>
+    {% endif %}
+  </header>
+
+  <!-- ── Stat strip ── -->
+  <div class="stat-strip">
+    <div class="stat-chip">
+      <span class="chip-val" id="chip-score-val">{{ result.weighted_score|floatformat:1 }}</span>
+      <span class="chip-lbl">ATS Score</span>
+    </div>
+    <div class="stat-chip chip-green">
+      <span class="chip-val" id="chip-matched-val">—</span>
+      <span class="chip-lbl">Matched Skills</span>
+    </div>
+    <div class="stat-chip chip-red">
+      <span class="chip-val" id="chip-missing-val">—</span>
+      <span class="chip-lbl">Missing Skills</span>
+    </div>
+    <div class="stat-chip chip-amber">
+      <span class="chip-val" id="chip-weak-val">—</span>
+      <span class="chip-lbl">Weak Areas</span>
+    </div>
+    <div class="stat-chip chip-gold">
+      <span class="chip-val" id="chip-imp-val">—</span>
+      <span class="chip-lbl">Improvements</span>
+    </div>
+  </div>
+
+  <!-- ══════════════ TWO-COLUMN GRID ══════════════ -->
+  <div class="main-grid">
+
+    <!-- ████  LEFT COLUMN  ████ -->
+    <div class="col-left">
+
+      <!-- Card: Score Ring -->
+      <div class="dash-card card-score">
+        <div class="card-head">
+          <span class="c-icon">◎</span>
+          <h2 class="c-title">Final ATS Score</h2>
+        </div>
+        <div class="ring-wrap">
+          <div class="ring-shell">
+            <svg class="ring-svg" viewBox="0 0 200 200">
+              <defs>
+                <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%"   stop-color="#D4AF37"/>
+                  <stop offset="100%" stop-color="#F5E6A8"/>
+                </linearGradient>
+                <filter id="rglow">
+                  <feGaussianBlur stdDeviation="3" result="blur"/>
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+              <circle class="rt" cx="100" cy="100" r="80"/>
+              <circle class="rf" cx="100" cy="100" r="80"
+                      stroke="url(#rg)" filter="url(#rglow)"
+                      data-score="{{ result.weighted_score|default:0 }}"/>
+            </svg>
+            <div class="ring-center">
+              <div class="ring-num" id="ring-num">0</div>
+              <div class="ring-sub">/ 100</div>
+            </div>
+          </div>
+          <div class="score-tier" id="score-tier">Calculating…</div>
+        </div>
+      </div>
+
+      <!-- Card: Category Breakdown -->
+      <div class="dash-card card-breakdown">
+        <div class="card-head">
+          <span class="c-icon">▦</span>
+          <h2 class="c-title">Category Breakdown</h2>
+        </div>
+        <div class="bk-list">
+          {% for param_name, param_val in result.breakdown.items %}
+          <div class="bk-row">
+            <div class="bk-meta">
+              <span class="bk-name">{{ param_name }}</span>
+              <span class="bk-score">{{ param_val }}<small>/100</small></span>
+            </div>
+            <div class="bk-track">
+              <div class="bk-fill
+                {% if param_val >= 75 %}fill-hi
+                {% elif param_val >= 50 %}fill-mid
+                {% else %}fill-lo{% endif %}"
+                   data-pct="{{ param_val }}" style="width:0%"></div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="chart-area">
+          <canvas id="breakdownChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Card: Improvement Recommendations -->
+      <div class="dash-card card-imp">
+        <div class="card-head">
+          <span class="c-icon c-icon--gold">↑</span>
+          <h2 class="c-title">Improvement Recommendations</h2>
+          <span class="c-badge badge-gold" id="badge-imp">0</span>
+        </div>
+        <ul class="imp-list" id="imp-list"></ul>
+      </div>
+
+    </div><!-- /col-left -->
+
+    <!-- ████  RIGHT COLUMN  ████ -->
+    <div class="col-right">
+
+      <!-- ════════════════════════════════════
+           MERGED SKILLS CARD
+           Matched + Missing in one card with
+           tab switcher + doughnut chart
+      ════════════════════════════════════ -->
+      <div class="dash-card card-skills-merged">
+        <div class="card-head">
+          <span class="c-icon c-icon--skills">⬡</span>
+          <h2 class="c-title">Skills Overview</h2>
+          <div class="skills-badge-row">
+            <span class="c-badge badge-green" id="badge-matched">0</span>
+            <span class="skills-sep">/</span>
+            <span class="c-badge badge-red"   id="badge-missing">0</span>
+          </div>
+        </div>
+
+        <!-- Doughnut + legend -->
+        <div class="skills-chart-row">
+          <div class="skills-donut-wrap">
+            <canvas id="skillsChart" width="110" height="110"></canvas>
+            <div class="donut-label" id="donut-label">—</div>
+          </div>
+          <div class="skills-legend" id="skill-legend"></div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="skills-tabs">
+          <button class="s-tab s-tab--active" data-tab="matched">
+            <span class="s-dot s-dot--green"></span>Matched
+          </button>
+          <button class="s-tab" data-tab="missing">
+            <span class="s-dot s-dot--red"></span>Missing
+          </button>
+        </div>
+
+        <!-- Matched panel -->
+        <div class="skills-panel" id="panel-matched">
+          <div class="badge-cloud" id="matched-cloud">
+            <span class="parse-hint">Parsing skills…</span>
+          </div>
+        </div>
+
+        <!-- Missing panel (hidden by default) -->
+        <div class="skills-panel skills-panel--hidden" id="panel-missing">
+          <div class="badge-cloud" id="missing-cloud">
+            <span class="parse-hint">Parsing gaps…</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Weak Alignment -->
+      <div class="dash-card card-weak">
+        <div class="card-head">
+          <span class="c-icon c-icon--amber">⚠</span>
+          <h2 class="c-title">Weak Alignment Areas</h2>
+          <span class="c-badge badge-amber" id="badge-weak">0</span>
+        </div>
+        <ul class="warn-list" id="warn-list"></ul>
+      </div>
+
+      <!-- Card: Full AI Analysis (toggleable) -->
+      <div class="dash-card card-raw">
+        <div class="card-head">
+          <span class="c-icon">≡</span>
+          <h2 class="c-title">Full AI Analysis</h2>
+          <button class="raw-toggle" id="raw-toggle" aria-expanded="false">Show ↓</button>
+        </div>
+        {# typing-output is always rendered; raw-body is toggled visible #}
+        <div class="raw-body" id="raw-body" hidden>
+          <div id="typing-output">{{ analysis_html|safe }}</div>
+        </div>
+      </div>
+
+    </div><!-- /col-right -->
+
+  </div><!-- /main-grid -->
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="{% static 'analysis_dashboard.js' %}"></script>
+</body>
+</html>

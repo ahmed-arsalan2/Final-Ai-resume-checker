@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+/* Page size and margins */
+@page {
+    size: A4;
+    margin: 10mm;  /* slightly bigger margins to avoid clipping */
+}
+
+html, body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Body styling */
+body {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    line-height: 1.3;
+    color: #000;
+}
+
+/* Headings */
+h1 {
+    font-size: 18px;
+    margin: 4px 0;
+}
+
+h2 {
+    font-size: 13px;
+    margin: 6px 0 3px 0;
+    border-bottom: 1px solid #000;
+    padding-bottom: 2px;
+}
+
+/* Paragraphs */
+p {
+    margin: 2px 0;
+}
+
+/* Lists */
+ul {
+    margin: 2px 0;
+    padding-left: 14px;
+}
+
+li {
+    margin-bottom: 2px;
+}
+
+/* Sections */
+.section {
+    margin-bottom: 6px;
+    page-break-inside: avoid; /* keep sections together on a page */
+}
+
+/* Containers */
+div {
+    margin: 0;
+    padding: 0;
+}
+.resume-container {
+    width: 100%;
+}
+
+/* Force no page break inside lists */
+ul, li {
+    page-break-inside: avoid;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="resume-container">
+    {{ resume_html|safe }}
+</div>
+
+</body>
+</html>

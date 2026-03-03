@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A³ — AI Assistant</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'a3-favicon.svg' %}">
+  <link rel="stylesheet" href="{% static 'chatbot.css' %}">
+</head>
+<body>
+
+<!-- ═══════════════════ NAVBAR ═══════════════════ -->
+<nav class="navbar">
+  <div class="nav-left">
+    <div class="logo">
+      <div class="logo-mark">A<sup>3</sup></div>
+      <div class="logo-divider"></div>
+      <div class="logo-text">
+        <span>AI Resume</span>
+        <small>Intelligence</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-right">
+    <div class="user-info">
+      <span class="user-icon">👤</span>
+      <span class="username">{{ request.user.username }}</span>
+    </div>
+    <a href="{% url 'dashboard' %}" class="dashboard-btn logout-btn">← Dashboard</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
+<div class="page-container">
+
+  <h1 class="page-title">⚡ AI Assistant</h1>
+
+  <!-- INPUT CARD -->
+  <div class="card">
+    <form method="POST">
+      {% csrf_token %}
+      <input
+        type="text"
+        name="user_input"
+        placeholder="Ask about ATS keywords, resume tips, role-specific skills…"
+        value="{{ request.POST.user_input|default:'' }}"
+        required
+        autocomplete="off">
+      <button type="submit">Send ↑</button>
+    </form>
+  </div>
+
+  <!-- RESPONSE CARD -->
+  {% if response %}
+  <div class="card response-box">
+    <div class="response-head">
+      <span class="response-icon">✦</span>
+      <span class="response-label">AI Response</span>
+    </div>
+    <div class="ai-response">
+      {{ response|linebreaks }}
+    </div>
+  </div>
+  {% endif %}
+
+  <p class="hint-text">Specialised in software resume optimisation · ATS · keyword strategy</p>
+
+</div>
+
+</body>
+</html>

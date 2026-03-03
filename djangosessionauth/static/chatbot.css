@@ -1,0 +1,265 @@
+/* ================================================================
+   chatbot.css — A³ AI Resume Intelligence
+   Unified theme: matches dashboard.css & analysis_dashboard.css
+   ================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+/* ── Reset ─────────────────────────────────────────────────── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar { display: none; }
+
+/* ── Body ──────────────────────────────────────────────────── */
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: radial-gradient(circle at 15% 20%, #161616, #0b0b0b 60%);
+  min-height: 100vh;
+  color: #EAEAEA;
+  overflow-x: hidden;
+}
+
+/* Ambient gold glow — identical to dashboard */
+body::before {
+  content: "";
+  position: fixed;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(212,175,55,0.08), transparent 70%);
+  top: -150px; right: -150px;
+  animation: floatGlow 10s ease-in-out infinite alternate;
+  z-index: -1;
+  pointer-events: none;
+}
+@keyframes floatGlow {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(40px); }
+}
+
+/* Background grid — identical to dashboard */
+body::after {
+  content: "";
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* ── Navbar ────────────────────────────────────────────────── */
+.navbar {
+  width: 100%; height: 70px;
+  padding: 0 60px;
+  display: flex; justify-content: space-between; align-items: center;
+  background: rgba(15,15,15,0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(212,175,55,0.2);
+  position: sticky; top: 0; z-index: 1000;
+}
+
+.logo {
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer; position: relative;
+}
+.logo-mark {
+  font-size: 24px; font-weight: 700;
+  color: #D4AF37; letter-spacing: 1px;
+}
+.logo-mark sup { font-size: 11px; position: relative; top: -0.7em; }
+
+.logo-mark::after {
+  content: ""; position: absolute; inset: -6px; border-radius: 8px;
+  background: radial-gradient(circle, rgba(212,175,55,0.35), transparent 70%);
+  opacity: 0; transition: opacity 0.35s ease; z-index: -1;
+}
+.logo:hover .logo-mark::after { opacity: 1; }
+
+.logo-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.15); }
+.logo-text span { font-size: 14px; font-weight: 600; }
+.logo-text small {
+  display: block; font-size: 11px;
+  color: rgba(255,255,255,0.6); margin-top: 2px;
+}
+
+.nav-left { display: flex; align-items: center; }
+.nav-right { display: flex; align-items: center; gap: 20px; }
+.user-info { display: flex; align-items: center; gap: 8px; }
+.user-icon  { font-size: 16px; }
+.username   { font-size: 14px; font-weight: 500; color: #F5F5F5; }
+
+/* Dashboard / back button — gold border style (matches chatbot-btn on dashboard) */
+.logout-btn,
+.dashboard-btn {
+  padding: 9px 22px; border-radius: 25px;
+  border: 1px solid rgba(212,175,55,0.4);
+  background: rgba(212,175,55,0.08);
+  color: #D4AF37; font-weight: 500; font-size: 13px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+.logout-btn:hover,
+.dashboard-btn:hover {
+  background: rgba(52,211,153,0.12);
+  border-color: rgba(52,211,153,0.5);
+  color: #34d399;
+  box-shadow: 0 8px 25px rgba(52,211,153,0.18);
+  transform: translateY(-2px);
+}
+
+/* ── Page container ────────────────────────────────────────── */
+.page-container {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 60px 24px 80px;
+}
+
+/* ── Page title ────────────────────────────────────────────── */
+.page-title {
+  font-size: 2.1rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 36px;
+  background: linear-gradient(90deg, #D4AF37, #F5E6A8, #D4AF37);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: titleShine 4s linear infinite;
+}
+@keyframes titleShine { to { background-position: 200% center; } }
+
+/* ── Card base — matches dashboard .card exactly ───────────── */
+.card {
+  position: relative;
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 26px;
+  padding: 32px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.04) inset;
+  overflow: hidden;
+  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* Gold radial glow on hover */
+.card::before {
+  content: ""; position: absolute; inset: 0; border-radius: 26px;
+  background: radial-gradient(circle at top right, rgba(212,175,55,0.13), transparent 60%);
+  opacity: 0; transition: opacity 0.35s ease; pointer-events: none;
+}
+.card:hover::before { opacity: 1; }
+.card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(212,175,55,0.4);
+  box-shadow: 0 28px 60px rgba(0,0,0,0.65), 0 0 35px rgba(212,175,55,0.14);
+}
+
+/* Gold top accent stripe */
+.card::after {
+  content: ""; position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, rgba(212,175,55,0.65), transparent);
+  border-radius: 26px 26px 0 0;
+}
+
+.card + .card { margin-top: 22px; }
+
+/* ── Input card: form row ──────────────────────────────────── */
+form {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+input[type="text"] {
+  flex: 1;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(0,0,0,0.6);
+  color: #EAEAEA; font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+input[type="text"]::placeholder { color: rgba(255,255,255,0.38); }
+input[type="text"]:focus {
+  outline: none;
+  border-color: rgba(212,175,55,0.65);
+  box-shadow: 0 0 0 3px rgba(212,175,55,0.14);
+}
+
+/* ── Send button ───────────────────────────────────────────── */
+button[type="submit"] {
+  position: relative;
+  padding: 13px 28px; border-radius: 14px; border: none;
+  background: linear-gradient(135deg, #D4AF37, #B9962E);
+  color: #0a0a0a; font-weight: 700; font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer; overflow: hidden; flex-shrink: 0;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+button[type="submit"]::before {
+  content: ""; position: absolute; top: 0; left: -75%; width: 50%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.45), transparent);
+  transform: skewX(-25deg);
+}
+button[type="submit"]:hover::before { animation: shimmer 0.7s forwards; }
+@keyframes shimmer { 100% { left: 130%; } }
+button[type="submit"]:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(212,175,55,0.32);
+}
+
+/* ── Response card ─────────────────────────────────────────── */
+.response-box { line-height: 1.75; }
+
+/* Section label inside response card */
+.response-head {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+}
+.response-icon {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: rgba(212,175,55,0.13);
+  border: 1px solid rgba(212,175,55,0.3);
+  color: #D4AF37; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.response-label {
+  font-size: 13px; font-weight: 600;
+  color: #D4AF37; letter-spacing: 0.03em;
+}
+
+/* AI response text */
+.ai-response {
+  font-size: 14px; line-height: 1.8;
+  color: rgba(232,232,232,0.88);
+  white-space: pre-wrap;
+  font-family: 'Inter', sans-serif;
+}
+.ai-response p { margin-bottom: 10px; }
+.ai-response strong { color: #F5E6A8; }
+
+/* ── Hint line ─────────────────────────────────────────────── */
+.hint-text {
+  text-align: center; font-size: 11px;
+  color: rgba(255,255,255,0.28);
+  margin-top: 16px; letter-spacing: 0.04em;
+  font-family: 'DM Mono', monospace;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .navbar         { padding: 0 20px; }
+  .page-container { padding: 40px 16px 60px; }
+  .page-title     { font-size: 1.7rem; }
+  form            { flex-direction: column; }
+  button[type="submit"] { width: 100%; }
+  .card           { padding: 24px 20px; }
+}
